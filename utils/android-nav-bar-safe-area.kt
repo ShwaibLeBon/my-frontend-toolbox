@@ -4,22 +4,27 @@
 
 // ADD THIS CODE INTO MAIN ACTIVITY OR WHERE THE WEBVIEW IS INITIALIZED
 
-// IMPORTANT: attach listener to the WebView, not android.R.id.content
-View webView = bridge.getWebView().getRootView();
+@Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-ViewCompat.setOnApplyWindowInsetsListener(webView, (v, insets) -> {
-	int bottomInset =
-			insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom;
+        // IMPORTANT: attach listener to the WebView, not android.R.id.content
+        View webView = bridge.getWebView().getRootView();
 
-	// Inject ONLY bottom inset
-	String js =
-			"document.documentElement.style.setProperty('--safe-bottom','"
-					+ bottomInset + "px');";
+        ViewCompat.setOnApplyWindowInsetsListener(webView, (v, insets) -> {
+            int bottomInset =
+                    insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom;
 
-	bridge.getWebView().post(() ->
-			bridge.getWebView().evaluateJavascript(js, null)
-	);
+            // Inject ONLY bottom inset
+            String js =
+                    "document.documentElement.style.setProperty('--safe-bottom','"
+                            + bottomInset + "px');";
 
-	// Return insets untouched → preserves edge-to-edge
-	return insets;
-});
+            bridge.getWebView().post(() ->
+                    bridge.getWebView().evaluateJavascript(js, null)
+            );
+
+            // Return insets untouched → preserves edge-to-edge
+            return insets;
+        });
+    }
